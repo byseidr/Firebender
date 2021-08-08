@@ -1,0 +1,6 @@
+node_modules
+build
+npm-debug.log
+.env
+.DS_Store
+hogwarts-rpg-6c2e8-firebase-adminsdk-is9ap-8f5852e0aa.json
