@@ -15,5 +15,13 @@
     "dependencies": {
         "firebase-admin": "^9.11.0",
         "typescript": "^4.3.5"
-    }
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/seidr52/Firebender.git"
+    },
+    "bugs": {
+        "url": "https://github.com/seidr52/Firebender/issues"
+    },
+    "homepage": "https://github.com/seidr52/Firebender#readme"
 }
