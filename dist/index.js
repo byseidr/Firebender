@@ -67,7 +67,7 @@ var getDocs = function (query) { return __awaiter(void 0, void 0, void 0, functi
         switch (_b.label) {
             case 0:
                 result = [];
-                if (!Object.keys(query).length)
+                if (!query || !Object.keys(query).length)
                     return [2 /*return*/, result];
                 return [4 /*yield*/, exports.getSnapshot(query)];
             case 1:
@@ -84,20 +84,22 @@ var getDocs = function (query) { return __awaiter(void 0, void 0, void 0, functi
     });
 }); };
 exports.getDocs = getDocs;
-var getField = function (longQuery) { return __awaiter(void 0, void 0, void 0, function () {
+var getField = function (query) { return __awaiter(void 0, void 0, void 0, function () {
     var result, snapshot, _i, _a, doc, field;
     return __generator(this, function (_b) {
         switch (_b.label) {
             case 0:
                 result = [];
-                return [4 /*yield*/, exports.getSnapshot(longQuery)];
+                if (!query || !Object.keys(query).length)
+                    return [2 /*return*/, result];
+                return [4 /*yield*/, exports.getSnapshot(query)];
             case 1:
                 snapshot = _b.sent();
                 if (!snapshot || snapshot.empty)
                     return [2 /*return*/, null];
                 for (_i = 0, _a = snapshot.docs; _i < _a.length; _i++) {
                     doc = _a[_i];
-                    field = doc.get(longQuery.field);
+                    field = doc.get(query.field);
                     if (!field)
                         return [2 /*return*/, null];
                     result.push(field);
@@ -112,7 +114,7 @@ var getFirstDoc = function (query) { return __awaiter(void 0, void 0, void 0, fu
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                if (!Object.keys(query).length)
+                if (!query || !Object.keys(query).length)
                     return [2 /*return*/, null];
                 return [4 /*yield*/, exports.getDocs(query)];
             case 1:
@@ -122,24 +124,21 @@ var getFirstDoc = function (query) { return __awaiter(void 0, void 0, void 0, fu
     });
 }); };
 exports.getFirstDoc = getFirstDoc;
-var getSnapshot = function (query, queryData) {
-    if (queryData === void 0) { queryData = null; }
-    return __awaiter(void 0, void 0, void 0, function () {
-        var collectionRef;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    if (!Object.keys(query).length)
-                        return [2 /*return*/, null];
-                    collectionRef = exports.getCollectionRef(query.collection);
-                    query.params.forEach(function (param) {
-                        var path = param[0], op = param[1], value = param[2];
-                        collectionRef = collectionRef.where(path, op, typeof value === "function" ? value(queryData) : value);
-                    });
-                    return [4 /*yield*/, collectionRef.get()];
-                case 1: return [2 /*return*/, _a.sent()];
-            }
-        });
+var getSnapshot = function (query) { return __awaiter(void 0, void 0, void 0, function () {
+    var collectionRef;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                if (!query || !Object.keys(query).length)
+                    return [2 /*return*/, null];
+                collectionRef = exports.getCollectionRef(query.collection);
+                query.params.forEach(function (param) {
+                    var path = param[0], op = param[1], value = param[2];
+                    collectionRef = collectionRef.where(path, op, typeof value === "function" ? value(query.data) : value);
+                });
+                return [4 /*yield*/, collectionRef.get()];
+            case 1: return [2 /*return*/, _a.sent()];
+        }
     });
-};
+}); };
 exports.getSnapshot = getSnapshot;

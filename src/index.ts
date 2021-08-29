@@ -23,7 +23,7 @@ export const getDoc = async (query: Query): Promise<any> =>
 
 export const getDocs = async (query: Query): Promise<any[]> => {
     const result: any[] = [];
-    if (!Object.keys(query).length) return result;
+    if (!query || !Object.keys(query).length) return result;
     const snapshot = await getSnapshot(query);
     if (!snapshot || snapshot.empty) return result;
     for (let doc of snapshot.docs) {
@@ -32,12 +32,13 @@ export const getDocs = async (query: Query): Promise<any[]> => {
     return result;
 };
 
-export const getField = async (longQuery: LongQuery): Promise<any> => {
+export const getField = async (query: LongQuery): Promise<any> => {
     const result: any[] = [];
-    const snapshot = await getSnapshot(longQuery);
+    if (!query || !Object.keys(query).length) return result;
+    const snapshot = await getSnapshot(query);
     if (!snapshot || snapshot.empty) return null;
     for (let doc of snapshot.docs) {
-        const field = doc.get(longQuery.field);
+        const field = doc.get(query.field);
         if (!field) return null;
         result.push(field);
     }
@@ -45,16 +46,15 @@ export const getField = async (longQuery: LongQuery): Promise<any> => {
 };
 
 export const getFirstDoc = async (query: Query): Promise<any> => {
-    if (!Object.keys(query).length) return null;
+    if (!query || !Object.keys(query).length) return null;
     const docs: any[] = await getDocs(query);
     return docs.length ? docs[0] : null;
 };
 
 export const getSnapshot = async (
-    query: Query | LongQuery,
-    queryData: any = null
+    query: Query | LongQuery
 ): Promise<firestore.QuerySnapshot | null> => {
-    if (!Object.keys(query).length) return null;
+    if (!query || !Object.keys(query).length) return null;
     let collectionRef: firestore.CollectionReference | firestore.Query =
         getCollectionRef(query.collection);
     query.params.forEach((param: QueryParams) => {
@@ -62,7 +62,7 @@ export const getSnapshot = async (
         collectionRef = collectionRef.where(
             path,
             op,
-            typeof value === "function" ? value(queryData) : value
+            typeof value === "function" ? value(query.data) : value
         );
     });
     return await collectionRef.get();
