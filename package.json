@@ -11,7 +11,7 @@
         "firestore"
     ],
     "author": "Seidr",
-    "license": "ISC",
+    "license": "MIT",
     "dependencies": {
         "firebase-admin": "^9.11.0",
         "typescript": "^4.3.5"
