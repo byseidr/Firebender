@@ -1,37 +1,41 @@
 import admin, { firestore, ServiceAccount } from "firebase-admin";
 
-import LongQuery from "./classes/LongQuery";
-import Query from "./classes/Query";
+import LongQuery from "./types/LongQuery";
+import Query from "./types/Query";
 import QueryParams from "./types/QueryParams";
 
 var db: firestore.Firestore;
 
-exports.init = (serviceAccount: ServiceAccount) => {
+export const init = (serviceAccount: ServiceAccount) => {
     admin.initializeApp({
         credential: admin.credential.cert(serviceAccount),
     });
     db = admin.firestore();
 };
 
-exports.fieldValue = admin.firestore.FieldValue;
+export const fieldValue = admin.firestore.FieldValue;
 
-exports.getDoc = async (query: Query) => await exports.getFirstDoc(query);
+export const getCollectionRef = (name: string): firestore.CollectionReference =>
+    db.collection(name);
 
-exports.getDocs = async (query: Query) => {
-    const result: any = [];
+export const getDoc = async (query: Query): Promise<any> =>
+    await getFirstDoc(query);
+
+export const getDocs = async (query: Query): Promise<any[]> => {
+    const result: any[] = [];
     if (!Object.keys(query).length) return result;
-    const snapshot = await exports.getSnapshot(query);
-    if (snapshot.empty) return result;
+    const snapshot = await getSnapshot(query);
+    if (!snapshot || snapshot.empty) return result;
     for (let doc of snapshot.docs) {
         if (doc.exists) result.push(doc.data());
     }
     return result;
 };
 
-exports.getField = async (longQuery: LongQuery) => {
-    const result = [];
-    const snapshot = await exports.getSnapshot(longQuery);
-    if (snapshot.empty) return null;
+export const getField = async (longQuery: LongQuery): Promise<any> => {
+    const result: any[] = [];
+    const snapshot = await getSnapshot(longQuery);
+    if (!snapshot || snapshot.empty) return null;
     for (let doc of snapshot.docs) {
         const field = doc.get(longQuery.field);
         if (!field) return null;
@@ -40,19 +44,19 @@ exports.getField = async (longQuery: LongQuery) => {
     return result;
 };
 
-exports.getFirstDoc = async (query: Query) => {
+export const getFirstDoc = async (query: Query): Promise<any> => {
     if (!Object.keys(query).length) return null;
-    const docs = await exports.getDocs(query);
+    const docs: any[] = await getDocs(query);
     return docs.length ? docs[0] : null;
 };
 
-exports.getSnapshot = async (
+export const getSnapshot = async (
     query: Query | LongQuery,
     queryData: any = null
-) => {
+): Promise<firestore.QuerySnapshot | null> => {
     if (!Object.keys(query).length) return null;
     let collectionRef: firestore.CollectionReference | firestore.Query =
-        db.collection(query.collection);
+        getCollectionRef(query.collection);
     query.params.forEach((param: QueryParams) => {
         const [path, op, value] = param;
         collectionRef = collectionRef.where(

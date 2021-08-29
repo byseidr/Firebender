@@ -39,22 +39,29 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.getSnapshot = exports.getFirstDoc = exports.getField = exports.getDocs = exports.getDoc = exports.getCollectionRef = exports.fieldValue = exports.init = void 0;
 var firebase_admin_1 = __importDefault(require("firebase-admin"));
 var db;
-exports.init = function (serviceAccount) {
+var init = function (serviceAccount) {
     firebase_admin_1.default.initializeApp({
-        credential: firebase_admin_1.default.credential.cert(serviceAccount)
+        credential: firebase_admin_1.default.credential.cert(serviceAccount),
     });
     db = firebase_admin_1.default.firestore();
 };
+exports.init = init;
 exports.fieldValue = firebase_admin_1.default.firestore.FieldValue;
-exports.getDoc = function (query) { return __awaiter(void 0, void 0, void 0, function () { return __generator(this, function (_a) {
+var getCollectionRef = function (name) {
+    return db.collection(name);
+};
+exports.getCollectionRef = getCollectionRef;
+var getDoc = function (query) { return __awaiter(void 0, void 0, void 0, function () { return __generator(this, function (_a) {
     switch (_a.label) {
         case 0: return [4 /*yield*/, exports.getFirstDoc(query)];
         case 1: return [2 /*return*/, _a.sent()];
     }
 }); }); };
-exports.getDocs = function (query) { return __awaiter(void 0, void 0, void 0, function () {
+exports.getDoc = getDoc;
+var getDocs = function (query) { return __awaiter(void 0, void 0, void 0, function () {
     var result, snapshot, _i, _a, doc;
     return __generator(this, function (_b) {
         switch (_b.label) {
@@ -65,7 +72,7 @@ exports.getDocs = function (query) { return __awaiter(void 0, void 0, void 0, fu
                 return [4 /*yield*/, exports.getSnapshot(query)];
             case 1:
                 snapshot = _b.sent();
-                if (snapshot.empty)
+                if (!snapshot || snapshot.empty)
                     return [2 /*return*/, result];
                 for (_i = 0, _a = snapshot.docs; _i < _a.length; _i++) {
                     doc = _a[_i];
@@ -76,7 +83,8 @@ exports.getDocs = function (query) { return __awaiter(void 0, void 0, void 0, fu
         }
     });
 }); };
-exports.getField = function (longQuery) { return __awaiter(void 0, void 0, void 0, function () {
+exports.getDocs = getDocs;
+var getField = function (longQuery) { return __awaiter(void 0, void 0, void 0, function () {
     var result, snapshot, _i, _a, doc, field;
     return __generator(this, function (_b) {
         switch (_b.label) {
@@ -85,7 +93,7 @@ exports.getField = function (longQuery) { return __awaiter(void 0, void 0, void 
                 return [4 /*yield*/, exports.getSnapshot(longQuery)];
             case 1:
                 snapshot = _b.sent();
-                if (snapshot.empty)
+                if (!snapshot || snapshot.empty)
                     return [2 /*return*/, null];
                 for (_i = 0, _a = snapshot.docs; _i < _a.length; _i++) {
                     doc = _a[_i];
@@ -98,7 +106,8 @@ exports.getField = function (longQuery) { return __awaiter(void 0, void 0, void 
         }
     });
 }); };
-exports.getFirstDoc = function (query) { return __awaiter(void 0, void 0, void 0, function () {
+exports.getField = getField;
+var getFirstDoc = function (query) { return __awaiter(void 0, void 0, void 0, function () {
     var docs;
     return __generator(this, function (_a) {
         switch (_a.label) {
@@ -112,7 +121,8 @@ exports.getFirstDoc = function (query) { return __awaiter(void 0, void 0, void 0
         }
     });
 }); };
-exports.getSnapshot = function (query, queryData) {
+exports.getFirstDoc = getFirstDoc;
+var getSnapshot = function (query, queryData) {
     if (queryData === void 0) { queryData = null; }
     return __awaiter(void 0, void 0, void 0, function () {
         var collectionRef;
@@ -121,10 +131,10 @@ exports.getSnapshot = function (query, queryData) {
                 case 0:
                     if (!Object.keys(query).length)
                         return [2 /*return*/, null];
-                    collectionRef = db.collection(query.collection);
+                    collectionRef = exports.getCollectionRef(query.collection);
                     query.params.forEach(function (param) {
                         var path = param[0], op = param[1], value = param[2];
-                        collectionRef = collectionRef.where(path, op, typeof value === 'function' ? value(queryData) : value);
+                        collectionRef = collectionRef.where(path, op, typeof value === "function" ? value(queryData) : value);
                     });
                     return [4 /*yield*/, collectionRef.get()];
                 case 1: return [2 /*return*/, _a.sent()];
@@ -132,3 +142,4 @@ exports.getSnapshot = function (query, queryData) {
         });
     });
 };
+exports.getSnapshot = getSnapshot;
