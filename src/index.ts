@@ -51,6 +51,36 @@ export const getFirstDoc = async (query: Query): Promise<any> => {
     return docs.length ? docs[0] : null;
 };
 
+export const getFirstRef = async (
+    query: Query,
+    defaultVal: any = null
+): Promise<firestore.DocumentReference | any> => {
+    if (!query || !Object.keys(query).length) return defaultVal;
+    const snapshot = await getSnapshot(query);
+    if (!snapshot || snapshot.empty) return defaultVal;
+    return snapshot.docs.length ? snapshot.docs[0].ref : null;
+};
+
+export const getRef = async (
+    query: Query,
+    defaultVal: any = null
+): Promise<firestore.DocumentReference | any> =>
+    await getFirstRef(query, defaultVal);
+
+export const getRefs = async (
+    query: Query,
+    defaultVal: any = null
+): Promise<firestore.DocumentReference[] | any> => {
+    const result: firestore.DocumentReference[] = [];
+    if (!query || !Object.keys(query).length) return defaultVal;
+    const snapshot = await getSnapshot(query);
+    if (!snapshot || snapshot.empty) return defaultVal;
+    for (let doc of snapshot.docs) {
+        if (doc.exists) result.push(doc.ref);
+    }
+    return result;
+};
+
 export const getSnapshot = async (
     query: Query | LongQuery
 ): Promise<firestore.QuerySnapshot | null> => {
