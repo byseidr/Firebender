@@ -97,3 +97,18 @@ export const getSnapshot = async (
     });
     return await collectionRef.get();
 };
+
+export const setDoc = async (
+    query: Query,
+    data: any,
+    merge: boolean = true
+) => {
+    const snapshot = await getSnapshot(query);
+    if (!snapshot || snapshot.empty) {
+        getCollectionRef(query.collection).add(data);
+    } else {
+        snapshot.forEach((doc) => {
+            doc.ref.parent.doc(doc.id).set(data, { merge: merge });
+        });
+    }
+};

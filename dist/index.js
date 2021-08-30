@@ -39,7 +39,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getSnapshot = exports.getRefs = exports.getRef = exports.getFirstRef = exports.getFirstDoc = exports.getField = exports.getDocs = exports.getDoc = exports.getCollectionRef = exports.fieldValue = exports.init = void 0;
+exports.setDoc = exports.getSnapshot = exports.getRefs = exports.getRef = exports.getFirstRef = exports.getFirstDoc = exports.getField = exports.getDocs = exports.getDoc = exports.getCollectionRef = exports.fieldValue = exports.init = void 0;
 var firebase_admin_1 = __importDefault(require("firebase-admin"));
 var db;
 var init = function (serviceAccount) {
@@ -198,3 +198,26 @@ var getSnapshot = function (query) { return __awaiter(void 0, void 0, void 0, fu
     });
 }); };
 exports.getSnapshot = getSnapshot;
+var setDoc = function (query, data, merge) {
+    if (merge === void 0) { merge = true; }
+    return __awaiter(void 0, void 0, void 0, function () {
+        var snapshot;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, exports.getSnapshot(query)];
+                case 1:
+                    snapshot = _a.sent();
+                    if (!snapshot || snapshot.empty) {
+                        exports.getCollectionRef(query.collection).add(data);
+                    }
+                    else {
+                        snapshot.forEach(function (doc) {
+                            doc.ref.parent.doc(doc.id).set(data, { merge: merge });
+                        });
+                    }
+                    return [2 /*return*/];
+            }
+        });
+    });
+};
+exports.setDoc = setDoc;
