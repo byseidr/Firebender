@@ -3,6 +3,7 @@ import admin, { firestore, ServiceAccount } from "firebase-admin";
 import LongQuery from "./types/LongQuery";
 import Query from "./types/Query";
 import QueryParams from "./types/QueryParams";
+import ShortQuery from "./types/ShortQuery";
 
 var db: firestore.Firestore;
 
@@ -29,6 +30,20 @@ export const getDocs = async (query: Query): Promise<any[]> => {
     for (let doc of snapshot.docs) {
         if (doc.exists) result.push(doc.data());
     }
+    return result;
+};
+
+export const getDocsByField = async (
+    query: ShortQuery,
+    fieldVals: string[]
+): Promise<any[]> => {
+    let result: any[] = [];
+    if (!query || !Object.keys(query).length || !fieldVals || !fieldVals.length)
+        return result;
+    result = await getDocs({
+        collection: query.collection,
+        params: [[query.field, "in", fieldVals], ...(query.params || [])],
+    });
     return result;
 };
 
@@ -96,6 +111,22 @@ export const getSnapshot = async (
         );
     });
     return await collectionRef.get();
+};
+
+export const hasDoc = async (query: Query): Promise<boolean> => {
+    if (!query || !Object.keys(query).length) return false;
+    const snapshot = await getSnapshot(query);
+    return !!snapshot && !snapshot.empty;
+};
+
+export const hasDocs = async (queries: Query[]): Promise<boolean> => {
+    let result: boolean[] = [];
+    if (!queries || !queries.length) return false;
+    for (let query of queries) {
+        const docResult = await hasDoc(query);
+        result.push(docResult);
+    }
+    return !!result.length && !result.includes(false);
 };
 
 export const setDoc = async (

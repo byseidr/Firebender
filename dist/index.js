@@ -35,11 +35,16 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __spreadArray = (this && this.__spreadArray) || function (to, from) {
+    for (var i = 0, il = from.length, j = to.length; i < il; i++, j++)
+        to[j] = from[i];
+    return to;
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.setDoc = exports.getSnapshot = exports.getRefs = exports.getRef = exports.getFirstRef = exports.getFirstDoc = exports.getField = exports.getDocs = exports.getDoc = exports.getCollectionRef = exports.fieldValue = exports.init = void 0;
+exports.setDoc = exports.hasDocs = exports.hasDoc = exports.getSnapshot = exports.getRefs = exports.getRef = exports.getFirstRef = exports.getFirstDoc = exports.getField = exports.getDocsByField = exports.getDocs = exports.getDoc = exports.getCollectionRef = exports.fieldValue = exports.init = void 0;
 var firebase_admin_1 = __importDefault(require("firebase-admin"));
 var db;
 var init = function (serviceAccount) {
@@ -84,6 +89,25 @@ var getDocs = function (query) { return __awaiter(void 0, void 0, void 0, functi
     });
 }); };
 exports.getDocs = getDocs;
+var getDocsByField = function (query, fieldVals) { return __awaiter(void 0, void 0, void 0, function () {
+    var result;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                result = [];
+                if (!query || !Object.keys(query).length || !fieldVals || !fieldVals.length)
+                    return [2 /*return*/, result];
+                return [4 /*yield*/, exports.getDocs({
+                        collection: query.collection,
+                        params: __spreadArray([[query.field, "in", fieldVals]], (query.params || [])),
+                    })];
+            case 1:
+                result = _a.sent();
+                return [2 /*return*/, result];
+        }
+    });
+}); };
+exports.getDocsByField = getDocsByField;
 var getField = function (query) { return __awaiter(void 0, void 0, void 0, function () {
     var result, snapshot, _i, _a, doc, field;
     return __generator(this, function (_b) {
@@ -198,6 +222,47 @@ var getSnapshot = function (query) { return __awaiter(void 0, void 0, void 0, fu
     });
 }); };
 exports.getSnapshot = getSnapshot;
+var hasDoc = function (query) { return __awaiter(void 0, void 0, void 0, function () {
+    var snapshot;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                if (!query || !Object.keys(query).length)
+                    return [2 /*return*/, false];
+                return [4 /*yield*/, exports.getSnapshot(query)];
+            case 1:
+                snapshot = _a.sent();
+                return [2 /*return*/, !!snapshot && !snapshot.empty];
+        }
+    });
+}); };
+exports.hasDoc = hasDoc;
+var hasDocs = function (queries) { return __awaiter(void 0, void 0, void 0, function () {
+    var result, _i, queries_1, query, docResult;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                result = [];
+                if (!queries || !queries.length)
+                    return [2 /*return*/, false];
+                _i = 0, queries_1 = queries;
+                _a.label = 1;
+            case 1:
+                if (!(_i < queries_1.length)) return [3 /*break*/, 4];
+                query = queries_1[_i];
+                return [4 /*yield*/, exports.hasDoc(query)];
+            case 2:
+                docResult = _a.sent();
+                result.push(docResult);
+                _a.label = 3;
+            case 3:
+                _i++;
+                return [3 /*break*/, 1];
+            case 4: return [2 /*return*/, !!result.length && !result.includes(false)];
+        }
+    });
+}); };
+exports.hasDocs = hasDocs;
 var setDoc = function (query, data, merge) {
     if (merge === void 0) { merge = true; }
     return __awaiter(void 0, void 0, void 0, function () {
