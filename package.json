@@ -1,6 +1,6 @@
 {
     "name": "firebender",
-    "version": "1.1.0",
+    "version": "1.1.1",
     "description": "A set of API tools for Firebase's Cloud Firestore.",
     "main": "dist/index.js",
     "scripts": {
@@ -13,8 +13,10 @@
     "author": "Seidr",
     "license": "MIT",
     "dependencies": {
-        "firebase-admin": "^9.11.0",
-        "typescript": "^4.3.5"
+        "firebase-admin": "^9.11.0"
+    },
+    "devDependencies": {
+        "typescript": "^4.4.2"
     },
     "repository": {
         "type": "git",
