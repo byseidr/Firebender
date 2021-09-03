@@ -1,9 +1,6 @@
 import admin, { firestore, ServiceAccount } from "firebase-admin";
 
-import LongQuery from "./types/LongQuery";
-import Query from "./types/Query";
-import QueryParams from "./types/QueryParams";
-import ShortQuery from "./types/ShortQuery";
+import { LongQuery, Query, QueryParams, ShortQuery } from "./types";
 
 var db: firestore.Firestore;
 
