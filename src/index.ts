@@ -44,6 +44,10 @@ export const getDocsByField = async (
     return result;
 };
 
+export const getDocByRef = async (
+    ref: firestore.DocumentReference
+): Promise<any> => (await ref.get()).data();
+
 export const getField = async (query: LongQuery): Promise<any> => {
     const result: any[] = [];
     if (!query || !Object.keys(query).length) return result;
@@ -56,6 +60,11 @@ export const getField = async (query: LongQuery): Promise<any> => {
     }
     return result;
 };
+
+export const getFieldByRef = async (
+    ref: firestore.DocumentReference,
+    field: string
+): Promise<any> => (await getDocByRef(ref))[field];
 
 export const getFirstDoc = async (query: Query): Promise<any> => {
     if (!query || !Object.keys(query).length) return null;
