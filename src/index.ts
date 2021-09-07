@@ -18,7 +18,7 @@ export const getCollectionRef = (path: string): firestore.CollectionReference =>
 
 export const getDoc = async (
     query: Query
-): Promise<firestore.DocumentData | null> => getFirstDoc;
+): Promise<firestore.DocumentData | null> => await getFirstDoc(query);
 
 export const getDocs = async (
     query: Query
@@ -90,7 +90,8 @@ export const getFirstRef = async (
 export const getRef = async (
     query: Query,
     defaultVal: any = null
-): Promise<firestore.DocumentReference | any> => getFirstRef;
+): Promise<firestore.DocumentReference | any> =>
+    await getFirstRef(query, defaultVal);
 
 export const getRefs = async (
     query: Query,
