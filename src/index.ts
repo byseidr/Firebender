@@ -154,3 +154,12 @@ export const setDoc = async (
         });
     }
 };
+
+export const updateDoc = async (query: Query, data: firestore.DocumentData) => {
+    const snapshot = await getSnapshot(query);
+    if (snapshot && !snapshot.empty) {
+        snapshot.forEach((doc: firestore.DocumentData) => {
+            doc.ref.parent.doc(doc.id).update(data);
+        });
+    }
+};
