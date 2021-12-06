@@ -140,6 +140,15 @@ export const hasDocs = async (queries: Query[]): Promise<boolean> => {
     return !!result.length && !result.includes(false);
 };
 
+export const removeDoc = async (query: Query) => {
+    const snapshot = await getSnapshot(query);
+    if (snapshot && !snapshot.empty) {
+        snapshot.forEach((doc: firestore.DocumentData) => {
+            doc.ref.parent.doc(doc.id).delete();
+        });
+    }
+};
+
 export const setDoc = async (
     query: Query,
     data: firestore.DocumentData,
