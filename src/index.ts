@@ -17,39 +17,52 @@ export const getCollectionRef = (path: string): firestore.CollectionReference =>
     db.collection(path);
 
 export const getDoc = async (
-    query: Query
-): Promise<firestore.DocumentData | null> => await getFirstDoc(query);
+    query: Query,
+    incRef: boolean = false
+): Promise<firestore.DocumentData | null> => await getFirstDoc(query, incRef);
 
 export const getDocs = async (
-    query: Query
+    query: Query,
+    incRef: boolean = false
 ): Promise<firestore.DocumentData[]> => {
     const result: firestore.DocumentData[] = [];
     if (!query || !Object.keys(query).length) return result;
     const snapshot = await getSnapshot(query);
     if (!snapshot || snapshot.empty) return result;
     for (let doc of snapshot.docs) {
-        if (doc.exists) result.push(doc.data());
+        if (doc.exists) {
+            let data = incRef ? { ...doc.data(), ref: doc.ref } : doc.data();
+            result.push(data);
+        }
     }
     return result;
 };
 
 export const getDocsByField = async (
     query: ShortQuery,
-    fieldVals: string[]
+    fieldVals: string[],
+    incRef: boolean = false
 ): Promise<firestore.DocumentData[]> => {
     let result: firestore.DocumentData[] = [];
     if (!query || !Object.keys(query).length || !fieldVals || !fieldVals.length)
         return result;
-    result = await getDocs({
-        collection: query.collection,
-        params: [[query.field, "in", fieldVals], ...(query.params || [])],
-    });
+    result = await getDocs(
+        {
+            collection: query.collection,
+            params: [[query.field, "in", fieldVals], ...(query.params || [])],
+        },
+        incRef
+    );
     return result;
 };
 
 export const getDocByRef = async (
-    ref: firestore.DocumentReference
-): Promise<firestore.DocumentData> => (await ref.get()).data()!;
+    ref: firestore.DocumentReference,
+    incRef: boolean = false
+): Promise<firestore.DocumentData> => {
+    let doc = await ref.get();
+    return incRef ? { ...doc.data()!, ref } : doc.data()!;
+};
 
 export const getField = async (query: LongQuery): Promise<any> => {
     const result: any[] = [];
@@ -70,10 +83,11 @@ export const getFieldByRef = async (
 ): Promise<any> => (await getDocByRef(ref))[field];
 
 export const getFirstDoc = async (
-    query: Query
+    query: Query,
+    incRef: boolean = false
 ): Promise<firestore.DocumentData | null> => {
     if (!query || !Object.keys(query).length) return null;
-    const docs: firestore.DocumentData[] = await getDocs(query);
+    const docs: firestore.DocumentData[] = await getDocs(query, incRef);
     return docs.length ? docs[0] : null;
 };
 
