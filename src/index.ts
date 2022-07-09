@@ -68,7 +68,7 @@ export const getDocByRef = async (
     return incRef ? { ...doc.data()!, ref } : doc.data()!;
 };
 
-export const getField = async (query: LongQuery): Promise<any> => {
+export const getField = async (query: LongQuery): Promise<any[] | null> => {
     const result: any[] = [];
     if (!query || !Object.keys(query).length) return result;
     const snapshot = await getSnapshot(query);
