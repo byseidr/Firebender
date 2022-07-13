@@ -167,6 +167,9 @@ export const removeDoc = async (query: Query) => {
     }
 };
 
+export const removeDocByRef = async (ref: firestore.DocumentReference) =>
+    await ref.delete();
+
 export const setDoc = async (
     query: Query,
     data: firestore.DocumentData,
