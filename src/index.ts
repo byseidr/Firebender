@@ -139,6 +139,8 @@ export const getSnapshot = async (
             typeof value === "function" ? value(query.data) : value
         );
     });
+    if (query.order) collectionRef = collectionRef.orderBy(...query.order);
+    if (query.limit) collectionRef = collectionRef.limit(query.limit);
     return await collectionRef.get();
 };
 
