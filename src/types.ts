@@ -20,6 +20,11 @@ export interface ShortQuery {
     data?: any;
 }
 
+export type QueryOrder = [
+    string | firestore.FieldPath,
+    FirebaseFirestore.OrderByDirection | undefined
+];
+
 export type QueryParams = [
     string | firestore.FieldPath,
     FirebaseFirestore.WhereFilterOp,
