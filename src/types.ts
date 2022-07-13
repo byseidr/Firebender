@@ -5,12 +5,16 @@ export interface LongQuery {
     field: string;
     params: QueryParams[];
     data?: any;
+    order?: QueryOrder;
+    limit?: number;
 }
 
 export interface Query {
     collection: string;
     params: QueryParams[];
     data?: any;
+    order?: QueryOrder;
+    limit?: number;
 }
 
 export interface ShortQuery {
@@ -18,6 +22,8 @@ export interface ShortQuery {
     field: string;
     params?: QueryParams[];
     data?: any;
+    order?: QueryOrder;
+    limit?: number;
 }
 
 export type QueryOrder = [
