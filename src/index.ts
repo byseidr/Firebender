@@ -75,8 +75,7 @@ export const getField = async (query: LongQuery): Promise<any[] | null> => {
     if (!snapshot || snapshot.empty) return null;
     for (let doc of snapshot.docs) {
         const field = doc.get(query.field);
-        if (!field) return null;
-        result.push(field);
+        if (field) result.push(field);
     }
     return result;
 };
