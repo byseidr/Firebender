@@ -159,6 +159,12 @@ export const hasDocs = async (queries: Query[]): Promise<boolean> => {
     return !!result.length && !result.includes(false);
 };
 
+export const hasField = async (query: LongQuery): Promise<boolean> => {
+    if (!query || !Object.keys(query).length) return false;
+    const field = await getField(query);
+    return !!field?.length;
+};
+
 export const removeDoc = async (query: Query) => {
     const snapshot = await getSnapshot(query);
     if (snapshot && !snapshot.empty) {
