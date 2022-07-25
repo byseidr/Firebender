@@ -178,6 +178,27 @@ export const removeDoc = async (query: Query) => {
 export const removeDocByRef = async (ref: firestore.DocumentReference) =>
     await ref.delete();
 
+export const removeObjFromArray = async (
+    query: LongQuery,
+    objParams: QueryParams[]
+) => {
+    if (!query || !Object.keys(query).length || !objParams?.length)
+        return false;
+    const docs = await getDocs(query, true);
+    for (const doc of docs) {
+        let field = doc[query.field];
+        if ($$.isObjArr(field)) {
+            field = field.filter((obj: { [key: string]: any }) => {
+                const paramResults = objParams.map((param) =>
+                    $$.isOp(obj[<string>param[0]], param[2], param[1])
+                );
+                return paramResults.includes(false);
+            });
+            await setDocByRef(doc.ref, { [query.field]: field });
+        }
+    }
+};
+
 export const setDoc = async (
     query: Query,
     data: firestore.DocumentData,
