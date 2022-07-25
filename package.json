@@ -15,7 +15,8 @@
     "author": "Seidr",
     "license": "MIT",
     "dependencies": {
-        "firebase-admin": "^9.11.0"
+        "firebase-admin": "^9.11.0",
+        "richierich": "^6.5.1"
     },
     "devDependencies": {
         "typescript": "^4.4.2"
