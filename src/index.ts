@@ -192,6 +192,15 @@ export const setDoc = async (
     }
 };
 
+export const setDocByRef = async (
+    ref: firestore.DocumentReference,
+    data: firestore.DocumentData,
+    merge: boolean = true
+) => {
+    let doc = (await ref.get()).data();
+    if (doc) ref.parent.doc(doc.id).set(data, { merge });
+};
+
 export const updateDoc = async (query: Query, data: firestore.DocumentData) => {
     const snapshot = await getSnapshot(query);
     if (snapshot && !snapshot.empty) {
