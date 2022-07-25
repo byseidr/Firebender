@@ -169,7 +169,7 @@ export const hasField = async (query: LongQuery): Promise<boolean> => {
 export const removeDoc = async (query: Query) => {
     const snapshot = await getSnapshot(query);
     if (snapshot && !snapshot.empty) {
-        snapshot.forEach((doc: firestore.DocumentData) => {
+        snapshot.forEach((doc: firestore.QueryDocumentSnapshot) => {
             doc.ref.parent.doc(doc.id).delete();
         });
     }
@@ -187,7 +187,7 @@ export const setDoc = async (
     if (!snapshot || snapshot.empty) {
         getCollectionRef(query.collection).add(data);
     } else {
-        snapshot.forEach((doc: firestore.DocumentData) => {
+        snapshot.forEach((doc: firestore.QueryDocumentSnapshot) => {
             doc.ref.parent.doc(doc.id).set(data, { merge });
         });
     }
@@ -205,7 +205,7 @@ export const setDocByRef = async (
 export const updateDoc = async (query: Query, data: firestore.DocumentData) => {
     const snapshot = await getSnapshot(query);
     if (snapshot && !snapshot.empty) {
-        snapshot.forEach((doc: firestore.DocumentData) => {
+        snapshot.forEach((doc: firestore.QueryDocumentSnapshot) => {
             doc.ref.parent.doc(doc.id).update(data);
         });
     }
