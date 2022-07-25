@@ -1,3 +1,4 @@
+import * as $$ from "richierich";
 import admin, { firestore, ServiceAccount } from "firebase-admin";
 
 import { LongQuery, Query, QueryParams, ShortQuery } from "./types";
