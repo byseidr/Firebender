@@ -14,6 +14,7 @@ export const init = (serviceAccount: ServiceAccount) => {
         credential: admin.credential.cert(serviceAccount),
     });
     db = admin.firestore();
+    return db;
 };
 
 export const fieldValue = admin.firestore.FieldValue;
