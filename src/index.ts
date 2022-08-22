@@ -9,13 +9,20 @@ export const addDoc = async (query: Query, data: firestore.DocumentData) => {
     getCollectionRef(query.collection).add(data);
 };
 
-export const init = (serviceAccount: ServiceAccount) => {
-    admin.initializeApp({
-        credential: admin.credential.cert(serviceAccount),
-    });
-    db = admin.firestore();
+export function init(db: firestore.Firestore): firestore.Firestore;
+export function init(serviceAccount: ServiceAccount): firestore.Firestore;
+export function init(
+    arg: firestore.Firestore | ServiceAccount
+): firestore.Firestore {
+    if (arg.constructor.name === "Firestore") db = <firestore.Firestore>arg;
+    else {
+        admin.initializeApp({
+            credential: admin.credential.cert(<ServiceAccount>arg),
+        });
+        db = admin.firestore();
+    }
     return db;
-};
+}
 
 export const fieldValue = admin.firestore.FieldValue;
 
