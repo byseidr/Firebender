@@ -57,7 +57,13 @@ export const getDocsByField = async (
     incRef: boolean = false
 ): Promise<firestore.DocumentData[]> => {
     let result: firestore.DocumentData[] = [];
-    if (!query || !Object.keys(query).length || !fieldVals || !fieldVals.length)
+    if (
+        !query ||
+        !Object.keys(query).length ||
+        !query?.field ||
+        !fieldVals ||
+        !fieldVals.length
+    )
         return result;
     result = await getDocs(
         {

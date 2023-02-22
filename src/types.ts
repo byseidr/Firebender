@@ -19,7 +19,7 @@ export interface Query {
 
 export interface ShortQuery {
     collection: string;
-    field: string;
+    field?: string;
     params?: QueryParams[];
     data?: any;
     order?: QueryOrder;
