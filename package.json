@@ -1,6 +1,6 @@
 {
     "name": "firebender",
-    "version": "3.0.2",
+    "version": "3.1.0",
     "description": "A set of API tools for Firebase's Cloud Firestore.",
     "main": "dist/index.js",
     "types": "dist/index.d.ts",
