@@ -148,12 +148,12 @@ export const getRefs = async (
 };
 
 export const getSnapshot = async (
-    query: Query | LongQuery
+    query: Query | LongQuery | ShortQuery
 ): Promise<firestore.QuerySnapshot | undefined> => {
     if (!query || !Object.keys(query).length) return;
     let collectionRef: firestore.CollectionReference | firestore.Query =
         getCollectionRef(query.collection);
-    query.params.forEach((param: QueryParams) => {
+    query?.params?.forEach((param: QueryParams) => {
         const [path, op, value] = param;
         collectionRef = collectionRef.where(
             path,
