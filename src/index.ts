@@ -222,7 +222,7 @@ export const removeObjFromArray = async (
 };
 
 export const setDoc = async (
-    query: Query,
+    query: ShortQuery,
     data: firestore.DocumentData,
     merge: boolean = true
 ) => {
