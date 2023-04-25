@@ -5,7 +5,10 @@ import { LongQuery, Query, QueryParams, ShortQuery } from "./types";
 
 var db: firestore.Firestore;
 
-export const addDoc = async (query: Query, data: firestore.DocumentData) => {
+export const addDoc = async (
+    query: ShortQuery,
+    data: firestore.DocumentData
+) => {
     getCollectionRef(query.collection).add(data);
 };
 
